@@ -1,6 +1,6 @@
 <h1 align="center">
 <br>
-  <a href="https://www.galileo.edu/"><img src="https://www.galileo.edu/wp-content/themes/galileo-theme/img/logo-footer.png" alt="Universidad Galileo" width="200"></a>
+  <a href="https://www.galileo.edu/"><img src="https://estudiantes.galileo.edu/img/Logos/logo-noslogan.png" alt="Universidad Galileo" width="200"></a>
   <br>
   Proyecto Regresión Lineal con Python
 </h1>
