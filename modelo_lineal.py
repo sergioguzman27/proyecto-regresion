@@ -20,10 +20,6 @@ class ModeloLineal():
         self.data_df = pd.DataFrame(self.data, columns=COLUMNS)
         self.training_df = pd.DataFrame(self.data[0:self.n_trainning], columns=COLUMNS)
         self.testing_df = pd.DataFrame(self.data[self.n_trainning:n], columns=COLUMNS)
-        
-    
-    def generar_dataframe(self):
-        pass
     
     def mostrar_medias(self):
         for col in self.training_df.columns:
@@ -48,29 +44,34 @@ class ModeloLineal():
     def mostar_histogramas(self):
         for col in self.training_df.columns:
             fig, axs = plt.subplots()
+            axs.set_title   (f'Histograma {col}')
             sns.histplot(self.training_df[col], kde=True, ax=axs)
+            
+    def mostrar_boxplot(self):
+        for col in self.training_df.columns:
+            plt.figure()
+            self.training_df.boxplot([col])
             
     def mostar_correlaciones(self):
         for col in self.training_df.columns:
             if col != 'SalePrice':
                 fig, axs = plt.subplots()
                 axs.scatter(self.training_df[col], self.training_df['SalePrice'])
-                # plt.title(np.corrcoef(training_df[col], training_df['SalePrice'])[0][1])
                 axs.set_title(f'{col} : ' + str(np.corrcoef(self.training_df[col], self.training_df['SalePrice'])[0][1]))
                 
-    def get_trainning_arrays(self, variable_x):
+    def get_trainning_arrays(self, variable_x: str):
         variables_x = self.training_df[variable_x]
         variables_y = self.training_df['SalePrice']
         
         return np.array(variables_x), np.array(variables_y)
     
-    def get_testing_arrays(self, variable_x):
+    def get_testing_arrays(self, variable_x: str):
         variables_x = self.testing_df[variable_x]
         variables_y = self.testing_df['SalePrice']
         
         return np.array(variables_x), np.array(variables_y)
     
-    def get_muestra_x(self, variable_x):
+    def get_muestra_x(self, variable_x: str):
         variables_x = np.array(self.testing_df[variable_x])
         
         n = len(variables_x)
@@ -79,7 +80,7 @@ class ModeloLineal():
         
         return variables_x[0:n_muestra]
     
-    def set_betas(self, b0, b1):
+    def set_betas(self, b0: float, b1: float):
         self.b0 = b0
         self.b1 = b1
         
@@ -99,8 +100,8 @@ class ModeloLineal():
             y_calculada = np.dot(observacion, parametros)
             error = np.mean(np.power(y_real - y_calculada, 2)) / 2
             
-            gradiente_b0 = np.mean(y_real - y_calculada)
-            gradiente_b1 = np.mean(np.dot(y_real - y_calculada, observacion))
+            gradiente_b0 = np.mean(y_calculada - y_real)
+            gradiente_b1 = np.mean(np.dot(y_calculada - y_real, observacion))
             
             b0 = b0 - (alpha*gradiente_b0)
             b1 = b1 - (alpha*gradiente_b1)
@@ -114,27 +115,28 @@ class ModeloLineal():
             if (i + 1) % imprimir_error_cada == 0:
                 print(f'El error es de: {error}')
                 
-        self.modelo = modelo
-        self.error_array = error_array
+        # self.modelo = modelo
+        # self.error_array = error_array
         return modelo, error_array
     
-    def graficar_error(self):
-        iteraciones = np.array([i for i, item in enumerate(self.error_array)])
-        errores = np.array(self.error_array)
+    def graficar_error(self, errores: np.array):
+        iteraciones = np.array([i for i, item in enumerate(errores)])
         
         plt.plot(iteraciones, errores)
+        plt.title(f'Errores del modelo')
         plt.xlabel('Iteraciones')
         plt.ylabel('Error')
         plt.show()
         
-    def graficar_modelo(self, n: int):
-        modelo_np = np.array(self.modelo)
-        for i, row in enumerate(modelo_np):
+    def graficar_modelo(self, betas: list, n: int):
+        modelo_betas = np.array(betas)
+        for i, row in enumerate(modelo_betas):
             if (i+1) % n == 0:
                 x = np.linspace(-5,10,10)
                 y = row[1] * x + row[0]
                 plt.plot(x, y, label=(i+1))
-        plt.title('Modelo')
+        
+        plt.title('Modelo (Betas)')
         plt.xlabel('x', color='#1C2833')
         plt.ylabel('y', color='#1C2833')
         plt.legend(loc='best')
@@ -181,3 +183,17 @@ class ModeloLineal():
         plt.grid()
         plt.show()
         
+    def estimar_modelo(self, vector_x: np.array, vector_y: np.array, betas: list):
+        constante_1 = np.empty(len(vector_x))
+        constante_1.fill(1)
+        
+        observacion = np.column_stack((vector_x, constante_1))
+        parametros = np.array(betas)
+        
+        y_estimada = np.dot(observacion, parametros)
+        y_real = vector_y
+        
+        errores = y_real - y_estimada
+        error = np.mean(np.power(y_real - y_estimada, 2)) / 2
+        
+        return y_estimada, error, errores
