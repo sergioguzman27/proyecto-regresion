@@ -7,10 +7,8 @@
 
 <h4 align="center">Proyecto del curso Ciencia de datos con Python de la maestría en Data Science de Universidad Galileo <a href="https://www.galileo.edu/" target="_blank">Universidad Galileo</a>.</h4>
 
+
 <p align="center">
-  <a href="#key-features">Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#download">Download</a> •
-  <a href="#credits">Credits</a> •
-  <a href="#license">License</a>
+  Explicación del proyecto a traves del siguiente enlace
+  <a href="https://drive.google.com/file/d/1792yVUnUqYjKM1SHMDupprwPlP4Zr734/view?usp=sharing">https://drive.google.com/file/d/1792yVUnUqYjKM1SHMDupprwPlP4Zr734/view?usp=sharing</a>
 </p>
